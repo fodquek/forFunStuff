@@ -6,18 +6,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "ZAXDE",
-      home: HomeIstanbul(key),
+      title: "Lé Title",
+      home: HomeWidget(key),
     );
   }
 }
 
-class HomeIstanbul extends StatefulWidget {
-  const HomeIstanbul(Key key) : super(key: key);
-  StateOfIstanbul createState() => StateOfIstanbul();
+class HomeWidget extends StatefulWidget {
+  const HomeWidget(Key key) : super(key: key);
+  ArtOfState createState() => ArtOfState();
 }
 
-class StateOfIstanbul extends State<HomeIstanbul> {
+class ArtOfState extends State<HomeWidget> {
 
   final int upperLimit = 26;
   bool nonNegative = true;
