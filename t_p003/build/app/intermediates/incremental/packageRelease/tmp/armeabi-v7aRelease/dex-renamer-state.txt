@@ -1,4 +1,4 @@
-#Sun Dec 22 17:23:29 EET 2019
-base.0=/Users/fod/ROOTWORKBENCH/flutter_workbench/t_p003/build/app/intermediates/transforms/r8/release/0/classes.dex
+#Sat Dec 28 13:30:27 EET 2019
+base.0=/Users/fod/githubDepo/forFunStuff/t_p003/build/app/intermediates/transforms/r8/release/0/classes.dex
 path.0=classes.dex
 renamed.0=classes.dex

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/fod/ROOTWORKBENCH/flutter_workbench/t_p003/build/app/intermediates/incremental/mergeReleaseResources/merged.dir/values-is/values-is.xml",
+            "outputFile": "/Users/fod/githubDepo/forFunStuff/t_p003/build/app/intermediates/incremental/mergeReleaseResources/merged.dir/values-is/values-is.xml",
             "map": [
                 {
                     "source": "/Users/fod/.gradle/caches/transforms-2/files-2.1/0a271e99b6771ad4a84318244d532fb7/core-1.0.0/res/values-is/values-is.xml",
