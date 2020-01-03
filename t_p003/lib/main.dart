@@ -128,7 +128,7 @@ class ArtOfState extends State<HomeWidget> {
               break;
             default:
           }
-          if(!left.isNaN) {
+          if(!left.isNaN && !left.isInfinite) {
             leftOperand = left.toString();
           }
         }
@@ -156,7 +156,7 @@ class ArtOfState extends State<HomeWidget> {
     final double operandWidth = (uptownWidth - operandAuxBoxWidth);
     final double operandHeight = uptownHeight * 0.5 * ratio;
 
-    final double buttonWidth = downtownWidth * 0.25 * ratio;
+    final double buttonWidth  = downtownWidth * 0.25 * ratio;
     final double buttonHeight = downtownHeight * 0.25 * ratio;
 
     return Scaffold(
@@ -472,7 +472,7 @@ class CoolerButton extends StatelessWidget {
       width: _width,
       height: _height,
       decoration: CDB(makeRadius(_width, _height), _colorList.elementAt(0)).getProduct(),
-      child: MaterialButton(
+      child: FlatButton(
         onPressed: _fn,
         child: CoolerText(
           _data,

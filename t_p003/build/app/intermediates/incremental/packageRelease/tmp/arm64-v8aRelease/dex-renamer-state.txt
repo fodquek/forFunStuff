@@ -1,4 +1,4 @@
-#Fri Jan 03 20:46:19 EET 2020
+#Fri Jan 03 21:31:47 EET 2020
 base.0=/Users/fod/githubDepo/forFunStuff/t_p003/build/app/intermediates/transforms/r8/release/0/classes.dex
 path.0=classes.dex
 renamed.0=classes.dex
