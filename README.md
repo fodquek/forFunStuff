@@ -1,3 +1,3 @@
 # forFunStuff
 
-  All folders all standalone projects(for now).
+  Every one of the folder is a standalone project(for now).
