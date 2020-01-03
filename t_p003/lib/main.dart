@@ -2,29 +2,34 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 var rng = new Random();
+bool darkMode = false;
 
-final List<Color> rngColorCave = [
-  Colors.black,
-  Colors.purple,
-  Colors.deepPurple,
-  Colors.blue,
-  Colors.cyan,
-  Colors.greenAccent,
-  Colors.lightGreen,
-  Colors.green,
-  Colors.yellowAccent,
-  Colors.yellow,
-  Colors.orangeAccent,
-  Colors.orange,
-  Colors.deepOrangeAccent,
-  Colors.deepOrange,
-  Colors.redAccent,
-  Colors.red,
-  Colors.white,
+final List<List<Color>> rngColorCave = [
+  [Colors.blue, Colors.white],
+  [Colors.deepPurple, Colors.white],
+  [Colors.purple, Colors.white],
+  [Colors.green, Colors.white],
+  [Colors.deepOrangeAccent, Colors.white],
+  [Colors.deepOrange, Colors.white],
+  [Colors.redAccent, Colors.white],
+  [Colors.red, Colors.white],
+  [Colors.white, Colors.black],
+  [Colors.cyan, Colors.black],
+  [Colors.greenAccent, Colors.black],
+  [Colors.lightGreen, Colors.black],
+  [Colors.yellowAccent, Colors.black],
+  [Colors.yellow, Colors.black],
+  [Colors.orangeAccent, Colors.black],
+  [Colors.orange, Colors.black],
+  [Colors.amber, Colors.black],
+  [Colors.black, Colors.white],
 ];
 
-Color randomColor() => rngColorCave[rng.nextInt(rngColorCave.length)];
-double makeFontSize(double w, double h) => w > h ? h / 20 : w / 20;
+List<Color> randomColor() => rngColorCave[rng.nextInt(rngColorCave.length)];
+double makeFontSize(double w, double h) => w < h ? h / 4.0 : w / 4.0;
+//double makeRadius(double w, double h) => w < h ? w / 15.0 : h / 15.0;
+double makeRadius(double w, double h) => (w + h) / 2.0; 
+Decoration makeDecoration(double w, double h, Color c) => CDB(makeRadius(w, h), c).getProduct();
 
 void main() => runApp(MyApp());
 
@@ -81,40 +86,54 @@ class ArtOfState extends State<HomeWidget> {
     });
   }
 
+  void flush() {
+    setState(() {
+      leftOperand = "0";
+    });
+  }
+
   void operation(String op) {
     setState(() {
 
-      if(!rightOperand.contains(".") && op == ".") {
-        push(".");
+      if(op == ".") {
+        if(!rightOperand.contains(".")) {
+          push(".");
+        }
         return;
       }
-      else if(op == "<<<") {
+      if(op == "<-"){
         pop();
         return;
       }
-      double left = double.parse(leftOperand);
-      double right = double.parse(rightOperand);
-      right *= nonNegative ? 1.0 : -1.0;
-      switch (op) {
-        case "+":
-          left += right;
-          break;
-        case "-":
-          left -= right;
-          break;
-        case "x":
-          left *= right;
-          break;
-        case "/":
-          left /= right;
-          break;
-        default:
+      if(rightOperand != ".") {
+        double left = double.parse(leftOperand);
+        if(left == 0.0) {
+          leftOperand = rightOperand;
         }
-        if(!left.isNaN) {
-          leftOperand = left.toString();
-          rightOperand = "0";
-          //push(left.toString());
+        else {
+          double right = double.parse(rightOperand);
+          right *= nonNegative ? 1.0 : -1.0;
+          switch (op) {
+            case "+":
+              left += right;
+              break;
+            case "-":
+              left -= right;
+              break;
+            case "x":
+              left *= right;
+              break;
+            case "/":
+              left /= right;
+              break;
+            default:
+          }
+          if(!left.isNaN) {
+            leftOperand = left.toString();
+          }
         }
+        rightOperand = "0";
+      }
     });
   }
 
@@ -124,14 +143,19 @@ class ArtOfState extends State<HomeWidget> {
     final double ratio = 0.9;
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-    final double signBoxWidth = screenWidth * 0.15 * ratio;
-    final double signBoxHeight = screenHeight * 0.3 * 0.5 * ratio;
-    final double rightOperandWidth = screenWidth * 0.85 * ratio;
-    final double rightOperandHeight = screenHeight * 0.3 * 0.5 * ratio;
-    final double leftOperandWidth = screenWidth * ratio;
-    final double leftOperandHeight = screenHeight * 0.3 * 0.5 * ratio;
+    final double operandFontSize = MediaQuery.of(context).orientation == Orientation.landscape ? 32 : 18;
+
+    final double uptownWidth = screenWidth * ratio;
+    final double uptownHeight = screenHeight * 0.3 * ratio;
     final double downtownWidth = screenWidth * ratio;
     final double downtownHeight = screenHeight * 0.7 * ratio;
+
+    final double operandAuxBoxWidth = uptownWidth * 0.15 * ratio;
+    final double operandAuxBoxHeight = uptownHeight * 0.5 * ratio;
+
+    final double operandWidth = (uptownWidth - operandAuxBoxWidth);
+    final double operandHeight = uptownHeight * 0.5 * ratio;
+
     final double buttonWidth = downtownWidth * 0.25 * ratio;
     final double buttonHeight = downtownHeight * 0.25 * ratio;
 
@@ -142,170 +166,242 @@ class ArtOfState extends State<HomeWidget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-
-                    CoolerButton(
-                      nonNegative ? "+" : "-",
-                      signBoxWidth,
-                      signBoxHeight,
-                      signBoxSwitchero
-                    ),
-
-                    Container(
-                      width: rightOperandWidth,
-                      height:  rightOperandHeight,
-                      color: randomColor(),
-                      child: CoolerText(
-                          rightOperand,
-                          26,
-                        ),
-                    ),
-                  ],
-                ),
-                Container(
-                  width: leftOperandWidth,  
-                  height: leftOperandHeight,
-                  color: randomColor(),
-                  child: CoolerText(
-                          leftOperand,
-                          26,
-                        ),
-                ),
-              ],
-            ),// upperTown
+            Spacer(),
             Container(
-              width: downtownWidth,
-              height: downtownHeight,
-              color: randomColor(),
+              width: uptownWidth,
+              height: uptownHeight,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  Spacer(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        CoolerButton(
+                          nonNegative ? "+" : "-",
+                          operandAuxBoxWidth,
+                          operandAuxBoxHeight,
+                          randomColor(),
+                          signBoxSwitchero,
+                        ),
+                        Spacer(),
+                        Container(
+                          width: operandWidth,
+                          height:  operandHeight,
+                          decoration: makeDecoration(
+                            operandWidth,
+                            operandHeight,
+                            Colors.white,
+                          ),
+                          child: CoolerText(
+                            rightOperand,
+                            Colors.black,
+                            operandFontSize,
+                            ),
+                          ),
+                          Spacer(),
+                        ],
+                      ),
+                  Spacer(),
+                  Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            CoolerButton(
+                                "C",
+                                operandAuxBoxWidth,
+                                operandAuxBoxHeight,
+                                randomColor(),
+                                flush,
+                            ),
+                            Spacer(),
+                            Container(
+                              width: operandWidth,  
+                              height: operandHeight,
+                              decoration: makeDecoration(
+                                operandWidth,
+                                operandHeight,
+                                Colors.white,
+                              ),
+                              child: CoolerText(
+                                leftOperand,
+                                Colors.black,
+                                operandFontSize,
+                              ),
+                            ),
+                          ],
+                        ),
+                  Spacer(),
+                ],
+              ),
+            ),
+            Spacer(),
+            Container(
+              width: downtownWidth,
+              height: downtownHeight,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Spacer(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+                      Spacer(),
                       CoolerButton(
                         "7",
                         buttonWidth,
                         buttonHeight,
+                        randomColor(),
                         () => push("7")
                       ),
+                      Spacer(),
                       CoolerButton(
                         "8",
                         buttonWidth,
                         buttonHeight,
+                        randomColor(),
                         () => push("8")
                       ),
+                      Spacer(),
                       CoolerButton(
                         "9",
                         buttonWidth,
                         buttonHeight,
+                        randomColor(),
                         () => push("9")
                       ),
+                      Spacer(),
                       CoolerButton(
                         "+",
                         buttonWidth,
                         buttonHeight,
+                        randomColor(),
                         () => operation("+")
                       ),
+                      Spacer(),
                     ],
                   ),
+                  Spacer(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+                      Spacer(),
                       CoolerButton(
                         "4",
                         buttonWidth,
                         buttonHeight,
+                        randomColor(),
                         () => push("4")
                       ),
+                      Spacer(),
                       CoolerButton(
                         "5",
                         buttonWidth,
                         buttonHeight,
+                        randomColor(),
                         () => push("5")
                       ),
+                      Spacer(),
                       CoolerButton(
                         "6",
                         buttonWidth,
                         buttonHeight,
+                        randomColor(),
                         () => push("6")
                       ),
+                      Spacer(),
                       CoolerButton(
                         "-",
                         buttonWidth,
                         buttonHeight,
+                        randomColor(),
                         () => operation("-")
                       ),
+                      Spacer(),
                     ],
                   ),
+                  Spacer(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+                      Spacer(),
                       CoolerButton(
                         "1",
                         buttonWidth,
                         buttonHeight,
+                        randomColor(),
                         () => push("1")
                       ),
+                      Spacer(),
                       CoolerButton(
                         "2",
                         buttonWidth,
                         buttonHeight,
+                        randomColor(),
                         () => push("2")
                       ),
+                      Spacer(),
                       CoolerButton(
                         "3",
                         buttonWidth,
                         buttonHeight,
+                        randomColor(),
                         () => push("3")
                       ),
+                      Spacer(),
                       CoolerButton(
                         "x",
                         buttonWidth,
                         buttonHeight,
+                        randomColor(),
                         () => operation("x")
                       ),
+                      Spacer(),
                     ],
                   ),
+                  Spacer(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+                      Spacer(),
                       CoolerButton(
                         "0",
                         buttonWidth,
                         buttonHeight,
+                        randomColor(),
                         () => push("0")
                       ),
+                      Spacer(),
                       CoolerButton(
                         ".",
                         buttonWidth,
                         buttonHeight,
+                        randomColor(),
                         () => operation(".")
                       ),
-
+                      Spacer(),
                       CoolerButton(
-                        "🐸",
+                        "<-",
                         buttonWidth,
                         buttonHeight,
-                        () => operation("<<<")
+                        randomColor(),
+                        () => operation("<-")
                       ),
-
+                      Spacer(),
                       CoolerButton(
                         "/",
                         buttonWidth,
                         buttonHeight,
+                        randomColor(),
                         () => operation("/")
                       ),
+                      Spacer(),
                     ],
                   ),
+                  Spacer(),
                 ],
               ),
-            )
+            ),
+            Spacer(),
           ],
         ),
       ),
@@ -313,11 +409,35 @@ class ArtOfState extends State<HomeWidget> {
   }
 }
 
+class CDB {
+
+  final double _radius;
+  final Color _color;
+  Decoration _decoration;
+
+  CDB(this._radius, this._color) {
+    _decoration = BoxDecoration(
+        borderRadius: BorderRadius.all(
+          Radius.circular(
+            _radius,
+          )
+        ),
+        color: _color
+      );
+  }
+
+  Decoration getProduct() {
+    return this._decoration;
+  }
+
+}
 
 class CoolerText extends StatelessWidget {
-  const CoolerText(this._data, this._fontSize);
   final String _data;
+  final Color _color;
   final double _fontSize;
+
+  const CoolerText(this._data, this._color, this._fontSize);
 
   @override
   Widget build(BuildContext context) {
@@ -328,7 +448,7 @@ class CoolerText extends StatelessWidget {
           style: TextStyle(
             fontSize: _fontSize,
             fontWeight: FontWeight.bold,
-            color: randomColor(),
+            color: _color,
           ),
         ),
       ),
@@ -341,21 +461,23 @@ class CoolerButton extends StatelessWidget {
   final String _data;
   final double _width;
   final double _height;
+  final List<Color> _colorList;
   final Function _fn;
 
-  CoolerButton(this._data, this._width, this._height, this._fn);
+  CoolerButton(this._data, this._width, this._height, this._colorList, this._fn);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: _width,
       height: _height,
-      color: randomColor(),
+      decoration: CDB(makeRadius(_width, _height), _colorList.elementAt(0)).getProduct(),
       child: MaterialButton(
         onPressed: _fn,
         child: CoolerText(
           _data,
-          _width < _height ? _height / 3.5 : _width / 3.5,
+          _colorList.elementAt(1),
+          makeFontSize(_width, _height),
         ),
       ),
     );
